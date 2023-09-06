@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regular form</title>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+    <nav>
+        <h2>HTTP Methods</h2>
+        <div class="links">
+            <a href="./index.html" id="Regular">Regular</a>
+            <a href="./javascript.html" id="Javascript">Javascript</a>
+        </div>
+    </nav>
+    <div class="form-container">
+        <h1>Javascript Form</h1>
+        <form>
+            <label for="input-field">Enter Name</label>
+            <input type="text" name="name" id="input-field" />
+            <button type="submit" class="submit-button">Submit</button>
+        </form>
+    </div>
+    <div class="name-list">
+
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        const result = document.querySelector('name-list')
+
+        const fetchPeople = async () => {
+            try {
+                const {data} = await axios.get('/api/people')
+                const students = data.data.map((student) => {
+                    return `<p>${student.name}</p>`
+                })
+
+                result.innerHTML = students.join('')
+            }
+            catch(error) {
+                console.log(error)
+                return `<p>Can't fetch data</p>`
+            }
+        }
+
+        fetchPeople()
+
+        const btn = document.querySelector('.submit-button')
+        const input = document.querySelector('#input-field')
+        btn.addEventListener('click', async (e) => {
+            e.preventDefault()
+            const nameValue = input.value
+
+            try {
+                const {data} = await axios.post('/api/people', {name: nameValue})
+                const p = document.createElement('p')
+                p.textContent = data.person
+                result.appendChild(p)
+            }
+            catch(error) {
+                console.log(error)
+            }
+
+            input.value = ''
+        })
+    </script>
+</body>
+</html>
